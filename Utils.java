@@ -202,123 +202,18 @@ public class Utils {
         return item;
     }
     
-    //////
-    // S'encarrega de mostrar el objecte per la consola
-    // in: 
-    // out: -
-    //////////
-    
-    public static String Show_Object(Object obj1){
-        StringBuilder b = new StringBuilder();
-        Stack<Class> classes = knowClass(obj1);
-        b.append("///***"+obj1.getClass().getSimpleName() +"***///"); 
-        b.append("\r\n");
-        for (int j = classes.size(); j > 0; j--) {
-            Class c = classes.pop();
-            Field[] atr = c.getDeclaredFields();
-            
-            for (int i = 0; i < atr.length; i++) {
-                b.append( Character.toUpperCase(atr[i].getName().charAt(0)) + atr[i].getName().substring(1) );
-                b.append(": ");
-                Field atro = atr[i];
-                atro.setAccessible(true);
-                try {
-                     switch(atro.getType().getSimpleName().toString()){
-                         case "int":
-                            if(atro.getInt(obj1)>0){
-                                 b.append(atro.getInt(obj1));
-                             }else{
-                                 b.append("??????");
-                             }
-                             break;
-                         case "float":
-                             if(atro.getFloat(obj1)>0.0){
-                                 b.append(atro.getFloat(obj1));
-                             }else{
-                                 b.append("??????");
-                             }
-                             break;
-                         case "boolean":
-                             b.append(atro.getBoolean(obj1));
-                             break;
-                         case "char":
-                             if(atro.getChar(obj1)!=0){
-                                b.append(atro.getChar(obj1));
-                             }else{
-                                b.append("??????");
-                             }
-                             break;
-                         case "ArrayList":
-                             if(atro.get(obj1)!=null){
-                                ArrayList<Object> al = (ArrayList<Object>) atro.get(obj1);
-                                if(!al.isEmpty()){
-                                    //b.append("??????A");
-                                   b.append("\n");
-                                   b.append(Utils.show_Array(al.toArray()));
-
-                                }else{
-                                    //b.append("??????B");
-                                }
-                             }else{
-                                b.append("??????");
-                             }
-                             break;
-                         default: 
-                             if(atro.getType().getSimpleName().toString().equals("Date") && atro.get(obj1)!=null){
-                                b.append(Utils.data_format((Date)atro.get(obj1), "dd/MM/yyyy")); 
-                             } else if(atro.getType().getSimpleName().toString().equals("String") && atro.get(obj1)!=null){
-                               b.append(atro.get(obj1));
-                             } else if(atro.get(obj1)!=null){
-                                    b.append("\n");
-                                     Method miMetodo = atro.getClass().getMethod("toString");
-                                     b.append((Class.forName(atro.get(obj1).getClass().getName()).cast(atro.get(obj1))));
-
-                             } else{
-                                b.append("??????");
-                             }
-                             break;
-                     }
-                    //b.append(atro.getType().getSimpleName().toString());
-                } catch (IllegalArgumentException ex) {
-                    Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IllegalAccessException ex) { 
-                    Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SecurityException ex) {
-                    Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ParseException ex) {
-                    Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-                }catch (NoSuchMethodException ex) {
-                    Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ClassNotFoundException ex) { 
-                    Logger.getLogger(Utils.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                b.append("\r\n");
-            }
-            
-            
-        }
-      
-        
-        return b.toString();
+    public static boolean isPrimary(String valor){
+      boolean primary = false; 
+      if(valor.indexOf("lang")==1){
+        primary = true;
+      }
+      return primary;
     }
     
-    private static  Stack<Class> knowClass(Object obj){
-        Stack<Class> classes = new Stack<Class>();
-        
-        Class a = obj.getClass();
-        String name = a.getSimpleName();
-        classes.add(a);
-        
-        do{
-        a = a.getSuperclass();
-        name = a.getSimpleName();
-        if(!name.equals("Object")){
-            classes.add(a);
-        }
-        }while(!name.equals("Object"));
-        
-        
-        return classes;
+    public static char getLetterDni(int numero){
+        String caracters="TRWAGMYFPDXBNJZSQVHLCKE";
+        int modul= numero % 23;
+        return caracters.charAt(modul);  
     }
    
 
